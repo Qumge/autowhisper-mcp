@@ -37,7 +37,7 @@
   "homepage": "https://autowhisper.xyz/skill",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xnjiang/autowhisper-mcp.git"
+    "url": "git+https://github.com/Qumge/autowhisper-mcp.git"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.18.0",

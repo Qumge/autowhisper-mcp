@@ -106,3 +106,14 @@ gh workflow run "Sync MCP Registry" -f dry_run=true
   `registryType`, `environmentVariables`, `isRequired`, `isSecret`). Don't guess
   it locally — `mcp-publisher validate` checks against the live schema. This is
   why CI deliberately installs the *latest* publisher rather than a pinned one.
+
+## 2026-10-05: moved to the Qumge GitHub organization
+
+The repo is now `Qumge/autowhisper-mcp` (the old `xnjiang/…` URL redirects).
+The MCP Registry name stays `io.github.xnjiang/autowhisper-mcp`, and so does `mcpName` in `package.json`.
+The registry checks that the npm package's `mcpName` matches, npm is frozen at 0.9.0, and that published
+package says `io.github.xnjiang/…`. ⚠️ The `io.github.xnjiang` namespace is authorized through GitHub OIDC
+for repos owned by `xnjiang`. Now that the repo belongs to Qumge, `sync-mcp-registry.yml` can no longer
+publish under that name. That's fine while npm stays frozen: the job only publishes when npm `latest`
+moves. If npm is ever published again, first move `mcpName` and `server.json` `name` to `io.github.Qumge/...`
+in the same release.

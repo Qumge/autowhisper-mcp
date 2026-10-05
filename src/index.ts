@@ -957,7 +957,7 @@ async function main() {
   // 过渡期:npm 包降为「只支持本地 stdio 的客户端」用。stdout 是协议通道,提示只能走 stderr。
   console.error(
     "autowhisper-mcp: you can now connect without installing anything — use https://autowhisper.xyz/mcp " +
-      "(see https://github.com/xnjiang/autowhisper-mcp#connect-by-url-recommended). This npm package is kept for stdio-only clients."
+      "(see https://github.com/Qumge/autowhisper-mcp#connect-by-url-recommended). This npm package is kept for stdio-only clients."
   );
 }
 
