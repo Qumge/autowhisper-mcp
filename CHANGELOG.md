@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+- Add direct context, create, update and task-query tools using the Rails capability contract. Submissions return immediately, keep retry identities, and preserve native confirmation, billing and truthful delivery status. Verified offline with real SDK transports; not yet published or verified against production.
+
 ## 0.8.0
 - **`receipt_text` now wins over `message` in every action result.** The server
   has computed this sentence from the actual outcome since 2026-09-13 and writes

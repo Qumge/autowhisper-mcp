@@ -31,6 +31,7 @@ import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fastReadPath } from "./fast-read.js";
+import { registerContentTools } from "./content-tools.js";
 import {
   pollUrl,
   cardText,
@@ -444,6 +445,20 @@ async function handleFastRead(path: string) {
 }
 
 const server = new McpServer({ name: "autowhisper", version: "0.9.0" });
+
+async function contentApi(path: string, payload: Record<string, unknown>, method: "GET" | "POST") {
+  if (!TOKEN) return {error: {code: "authentication_required", message: NO_TOKEN, retryable: false}};
+  const query = new URLSearchParams(Object.entries(payload).map(([key, value]) => [key, String(value)]));
+  const res = await api(method === "GET" ? `${path}?${query}` : path, {method,
+    ...(method === "POST" ? {headers: {"Content-Type": "application/json"}, body: JSON.stringify(payload)} : {})});
+  const data = await res.json();
+  return res.ok ? data : {...data, error: data.error || {code: "generation_failed", message: `HTTP ${res.status}`, retryable: false}};
+}
+
+registerContentTools(server, {
+  get: (path, params) => contentApi(path, params, "GET"),
+  post: (path, payload) => contentApi(path, payload, "POST"),
+});
 
 // ─── Device flow (RFC 8628) ────────────────────────────────────────────────
 // The server side has had this since day one; no client used it, so every

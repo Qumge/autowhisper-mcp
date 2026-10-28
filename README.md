@@ -38,7 +38,14 @@ Get your token at **[autowhisper.xyz/skill](https://autowhisper.xyz/skill)** →
 
 ## Tools
 
-- **`autowhisper_cmo`** — send an instruction to your CMO and get its reply. e.g. *"Make a batch of ad creatives for my product https://mystore.com/widget"*, *"Which creative should I run first?"*, *"Keep my channels posted this week"*.
+- **`autowhisper_context`** — read product facts, material aliases and available presets in an explicit workspace.
+- **`autowhisper_create_content`** — submit an explicit preset content batch directly. Returns `accepted` immediately, then uses native confirmation and generation credits. Reuse the same `request_id` and identical payload on retries.
+- **`autowhisper_update_task`** — revise, resume or render explicit items using the current task/item revisions and server-returned preview approval.
+- **`autowhisper_task`** — read exactly one `request_id` or `task_id`. `applied` means the command reached the native task; only `delivery_complete=true` means the requested deliverable is ready.
+
+These four tools require `workspace_id`. Discover workspace IDs with `autowhisper_status`, then read context before creating. Follow the returned `next_actions` for confirmation and review. Unknown submission? Query the original request ID before retrying; do not invent a new ID or fall back to a separately charged CMO turn. `requires_planning` means explain the unsupported requirement and offer CMO advice. Production availability depends on the backend rollout flag and user allowlist; this change is not yet published.
+
+- **`autowhisper_cmo`** — ask for marketing judgment or planning, such as *"Which creative should I run first?"*. Prefer the direct content tools when the requested product, content and changes are explicit.
 - **`autowhisper_products_summary`** — fast product counts by account/workspace. Use for *"how many products do I have?"* instead of spending a CMO chat turn.
 - **`autowhisper_products`** — fast product list, with optional workspace/archive filters.
 - **`autowhisper_status`** — fast CMO/account snapshot: products, feed, platforms, wallet, and automation settings.
@@ -67,5 +74,7 @@ To publish, ask the CMO to connect a social account — OAuth platforms return a
 | `AUTOWHISPER_BASE_URL` | `https://autowhisper.xyz` | override for self-host/staging |
 
 ## License
+
+Offline contract checks: `AUTOWHISPER_CONTRACT_FILE=test/fixtures/agent_content_contract.json npm test`. The fixture is exported by the Rails contract test (`UPDATE_AGENT_CONTENT_CONTRACT=1`); regenerate `src/content-contract.ts` from that exact JSON when updating. Live contract checks remain a separate release verification.
 
 MIT

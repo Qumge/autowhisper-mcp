@@ -37,6 +37,7 @@ type Contract = {
 const SOURCE = readFileSync(new URL("./index.js", import.meta.url), "utf8");
 
 async function fetchContract(): Promise<Contract | null> {
+  if (process.env.AUTOWHISPER_CONTRACT_FILE) return JSON.parse(readFileSync(process.env.AUTOWHISPER_CONTRACT_FILE, "utf8"));
   try {
     const res = await fetch(CONTRACT_URL, { signal: AbortSignal.timeout(8000) });
     if (!res.ok) return null;

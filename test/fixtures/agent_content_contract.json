@@ -1,0 +1,825 @@
+{
+  "version": "2026-09-21",
+  "generated_from": "app/services/api/contract.rb",
+  "scope_field_values": [
+    "workspace"
+  ],
+  "receipt_field": "receipt_text",
+  "content_capabilities": {
+    "schema_version": 1,
+    "workspace_required": true,
+    "max_request_bytes": 65536,
+    "max_items": 20,
+    "request_id_pattern": "^[a-zA-Z0-9_-]{8,100}$",
+    "request_states": [
+      "accepted",
+      "preparing",
+      "confirmation_required",
+      "queued",
+      "applied",
+      "blocked",
+      "failed",
+      "canceled"
+    ],
+    "task_states": [
+      "draft",
+      "queued",
+      "running",
+      "waiting_review",
+      "blocked",
+      "failed",
+      "completed",
+      "paused",
+      "canceled",
+      "unknown"
+    ],
+    "error_codes": [
+      "invalid_request",
+      "workspace_not_found",
+      "target_not_found",
+      "stale_revision",
+      "conflicting_request",
+      "capability_unavailable",
+      "requires_planning",
+      "material_required",
+      "insufficient_balance",
+      "enqueue_failed",
+      "generation_failed",
+      "submission_unknown"
+    ],
+    "tools": [
+      {
+        "name": "autowhisper_context",
+        "description": "Read product facts, material aliases and supported presets. No models or credits. Requires explicit workspace and product.",
+        "method": "GET",
+        "path": "/api/content/context",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "workspace_id": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "product_id": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "workspace_id",
+            "product_id"
+          ],
+          "additionalProperties": false
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "title": "Context"
+        }
+      },
+      {
+        "name": "autowhisper_create_content",
+        "description": "Create explicit content directly using native presets, without a CMO routing turn. Generation costs credits after confirmation. Returns an asynchronous request receipt immediately; poll autowhisper_task. Reuse the same request_id and identical payload on retries. Never expand the user's creative requirements.",
+        "method": "POST",
+        "path": "/api/content/tasks",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "workspace_id": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "request_id": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]{8,100}$",
+              "minLength": 8,
+              "maxLength": 100
+            },
+            "product_id": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "brief": {
+              "type": "object",
+              "properties": {
+                "goal": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4000
+                },
+                "audience": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4000
+                },
+                "content_language": {
+                  "type": "string",
+                  "enum": [
+                    "zh",
+                    "en",
+                    "ja",
+                    "es",
+                    "fr",
+                    "de",
+                    "pt",
+                    "ko",
+                    "ru",
+                    "it"
+                  ]
+                },
+                "caption_language": {
+                  "type": "string",
+                  "enum": [
+                    "zh",
+                    "en",
+                    "ja",
+                    "es",
+                    "fr",
+                    "de",
+                    "pt",
+                    "ko",
+                    "ru",
+                    "it",
+                    "none",
+                    "off"
+                  ]
+                },
+                "requested_duration_sec": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "cta": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4000
+                },
+                "contact_channels": {
+                  "type": [
+                    "object",
+                    "array"
+                  ]
+                },
+                "real_footage_required": {
+                  "type": "boolean"
+                },
+                "material_selections": {
+                  "type": "object",
+                  "properties": {
+                    "person": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "maxLength": 200
+                    },
+                    "scene": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "maxLength": 200
+                    },
+                    "style": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "maxLength": 200
+                    },
+                    "screen": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "maxLength": 200
+                    }
+                  },
+                  "required": [],
+                  "additionalProperties": false
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 20,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "content_type": {
+                    "type": "string",
+                    "enum": [
+                      "ugc",
+                      "cinematic",
+                      "slides",
+                      "product_demo",
+                      "social_copy",
+                      "lookbook",
+                      "feature_poster",
+                      "animated_explainer"
+                    ]
+                  },
+                  "template_code": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "direction": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500
+                  },
+                  "format": {
+                    "type": "object",
+                    "properties": {
+                      "aspect": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 100
+                      },
+                      "duration_sec": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "word_limit": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "voiceover_mode": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 100
+                      },
+                      "usage_clip_id": {
+                        "type": "integer",
+                        "minimum": 1
+                      },
+                      "reference_edit_mode": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 100
+                      },
+                      "reference_image_ids": {
+                        "type": "array",
+                        "maxItems": 20,
+                        "items": {
+                          "type": "integer",
+                          "minimum": 1
+                        }
+                      },
+                      "reference_asset_ids": {
+                        "type": "array",
+                        "maxItems": 20,
+                        "items": {
+                          "type": "string",
+                          "maxLength": 200
+                        }
+                      }
+                    },
+                    "required": [],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "key",
+                  "content_type"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "workspace_id",
+            "request_id",
+            "product_id",
+            "items"
+          ],
+          "additionalProperties": false
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "title": "Create content"
+        }
+      },
+      {
+        "name": "autowhisper_update_task",
+        "description": "Revise, resume or render explicit task items at their exact current revisions. Generation costs native credits after confirmation. Returns immediately. Preserve request_id on retries; use only server-returned preview_approval. Does not publish content.",
+        "method": "POST",
+        "path": "/api/content/tasks/:task_id/operations",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "workspace_id": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "request_id": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]{8,100}$",
+              "minLength": 8,
+              "maxLength": 100
+            },
+            "task_id": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "operation": {
+              "type": "string",
+              "enum": [
+                "revise",
+                "resume",
+                "render"
+              ]
+            },
+            "item_ids": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 20,
+              "uniqueItems": true,
+              "items": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "expected_task_revision": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "expected_revisions": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "patch": {
+              "type": "object",
+              "properties": {
+                "common": {
+                  "type": "object",
+                  "properties": {
+                    "audience": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4000
+                    },
+                    "content_language": {
+                      "type": "string",
+                      "enum": [
+                        "zh",
+                        "en",
+                        "ja",
+                        "es",
+                        "fr",
+                        "de",
+                        "pt",
+                        "ko",
+                        "ru",
+                        "it"
+                      ]
+                    },
+                    "caption_language": {
+                      "type": "string",
+                      "enum": [
+                        "zh",
+                        "en",
+                        "ja",
+                        "es",
+                        "fr",
+                        "de",
+                        "pt",
+                        "ko",
+                        "ru",
+                        "it",
+                        "none",
+                        "off"
+                      ]
+                    },
+                    "requested_duration_sec": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "cta": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4000
+                    },
+                    "contact_channels": {
+                      "type": [
+                        "object",
+                        "array"
+                      ]
+                    },
+                    "real_footage_required": {
+                      "type": "boolean"
+                    },
+                    "material_selections": {
+                      "type": "object",
+                      "properties": {
+                        "person": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "maxLength": 200
+                        },
+                        "scene": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "maxLength": 200
+                        },
+                        "style": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "maxLength": 200
+                        },
+                        "screen": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "maxLength": 200
+                        }
+                      },
+                      "required": [],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [],
+                  "additionalProperties": false
+                },
+                "format": {
+                  "type": "object",
+                  "properties": {
+                    "template_code": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 100
+                    },
+                    "aspect": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 100
+                    },
+                    "duration_sec": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "word_limit": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "voiceover_mode": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 100
+                    },
+                    "usage_clip_id": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "reference_edit_mode": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 100
+                    },
+                    "reference_image_ids": {
+                      "type": "array",
+                      "maxItems": 20,
+                      "items": {
+                        "type": "integer",
+                        "minimum": 1
+                      }
+                    },
+                    "reference_asset_ids": {
+                      "type": "array",
+                      "maxItems": 20,
+                      "items": {
+                        "type": "string",
+                        "maxLength": 200
+                      }
+                    }
+                  },
+                  "required": [],
+                  "additionalProperties": false
+                },
+                "direction": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "topic_label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "unit_selector": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "image",
+                    "card",
+                    "frame",
+                    "text"
+                  ]
+                },
+                "position": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "frame": {
+                  "type": "string",
+                  "enum": [
+                    "first",
+                    "final"
+                  ]
+                }
+              },
+              "required": [
+                "kind"
+              ],
+              "additionalProperties": false
+            },
+            "preview_approval": {
+              "type": "object",
+              "description": "Use exactly the server-returned preview approval binding."
+            }
+          },
+          "required": [
+            "workspace_id",
+            "request_id",
+            "task_id",
+            "operation",
+            "item_ids",
+            "expected_task_revision",
+            "expected_revisions"
+          ],
+          "additionalProperties": false
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "title": "Update task"
+        }
+      },
+      {
+        "name": "autowhisper_task",
+        "description": "Read exactly one request_id or task_id in an explicit workspace. applied means command accepted, not delivered content. Check delivery_complete, previews and next_actions. No models, mutations or credits.",
+        "method": "GET",
+        "path": "/api/content/requests/:request_id|/api/content/tasks/:task_id",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "workspace_id": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "request_id": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]{8,100}$",
+              "minLength": 8,
+              "maxLength": 100
+            },
+            "task_id": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "workspace_id"
+          ],
+          "additionalProperties": false,
+          "oneOf": [
+            {
+              "required": [
+                "request_id"
+              ]
+            },
+            {
+              "required": [
+                "task_id"
+              ]
+            }
+          ]
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "title": "Task"
+        }
+      }
+    ]
+  },
+  "direct_action_tools": [
+    {
+      "name": "approve_feed_item",
+      "confirmation_required": true,
+      "capabilities": [
+        "write",
+        "external_publish"
+      ]
+    },
+    {
+      "name": "reject_feed_item",
+      "confirmation_required": true,
+      "capabilities": [
+        "write",
+        "destructive"
+      ]
+    },
+    {
+      "name": "dismiss_feed_item",
+      "confirmation_required": true,
+      "capabilities": [
+        "write",
+        "destructive"
+      ]
+    },
+    {
+      "name": "publish_content",
+      "confirmation_required": true,
+      "capabilities": [
+        "write",
+        "external_publish"
+      ]
+    },
+    {
+      "name": "regenerate_content",
+      "confirmation_required": true,
+      "capabilities": [
+        "write",
+        "spend_credits"
+      ]
+    },
+    {
+      "name": "reschedule_post",
+      "confirmation_required": true,
+      "capabilities": [
+        "write",
+        "external_publish"
+      ]
+    },
+    {
+      "name": "retry_post",
+      "confirmation_required": true,
+      "capabilities": [
+        "write",
+        "external_publish"
+      ]
+    },
+    {
+      "name": "mark_as_published",
+      "confirmation_required": true,
+      "capabilities": [
+        "write",
+        "external_publish"
+      ]
+    },
+    {
+      "name": "boost_post",
+      "confirmation_required": true,
+      "capabilities": [
+        "write",
+        "external_publish",
+        "spend_credits"
+      ]
+    },
+    {
+      "name": "select_content_menu",
+      "confirmation_required": false,
+      "capabilities": [
+        "write"
+      ]
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/content/context",
+      "scope": "workspace",
+      "takes_workspace_id": true,
+      "workspace_required": true,
+      "discovery": false,
+      "note": "Read-only product context; explicit workspace_id and product_id are required."
+    },
+    {
+      "path": "/api/content/tasks",
+      "scope": "workspace",
+      "takes_workspace_id": true,
+      "workspace_required": true,
+      "discovery": false
+    },
+    {
+      "path": "/api/content/tasks/:task_id",
+      "scope": "workspace",
+      "takes_workspace_id": true,
+      "workspace_required": true,
+      "discovery": false
+    },
+    {
+      "path": "/api/content/tasks/:task_id/operations",
+      "scope": "workspace",
+      "takes_workspace_id": true,
+      "workspace_required": true,
+      "discovery": false
+    },
+    {
+      "path": "/api/content/requests/:request_id",
+      "scope": "workspace",
+      "takes_workspace_id": true,
+      "workspace_required": true,
+      "discovery": false
+    },
+    {
+      "path": "/api/cmo/status",
+      "scope": "workspace",
+      "takes_workspace_id": true,
+      "discovery": true,
+      "note": "计数(products/feed/platforms)属于当前工作区;wallet 是账号级;workspaces 字段是【全部工作区的目录】—— 收窄作用域之后唯一的发现出口。"
+    },
+    {
+      "path": "/api/cmo/feed",
+      "scope": "workspace",
+      "takes_workspace_id": true,
+      "discovery": false
+    },
+    {
+      "path": "/api/posts",
+      "scope": "workspace",
+      "takes_workspace_id": true,
+      "discovery": false
+    },
+    {
+      "path": "/api/platforms",
+      "scope": "workspace",
+      "takes_workspace_id": true,
+      "discovery": false
+    },
+    {
+      "path": "/api/products",
+      "scope": "workspace",
+      "takes_workspace_id": true,
+      "discovery": false
+    },
+    {
+      "path": "/api/products/summary",
+      "scope": "account",
+      "takes_workspace_id": false,
+      "discovery": true,
+      "note": "账号级总数 + 每个工作区的分项。与 /api/cmo/status 的 workspaces 目录同为发现入口 —— 这两个是仅有的跨工作区读接口。"
+    },
+    {
+      "path": "/api/wallet",
+      "scope": "none",
+      "takes_workspace_id": false,
+      "discovery": false,
+      "note": "积分是账号级,不按工作区分。"
+    },
+    {
+      "path": "/api/performance",
+      "scope": "workspace",
+      "takes_workspace_id": true,
+      "discovery": false,
+      "note": "跨渠道成效:四层漏斗 + 按渠道拆开的明细 + 窗口内广告花费。⛔ 广告侧的数走 ad_daily_metrics 的窗口累计,不是 Ad#metrics 那个当日快照。"
+    },
+    {
+      "path": "/api/viral-script/status",
+      "scope": "none",
+      "takes_workspace_id": false,
+      "discovery": false,
+      "note": "Viral Script 的免费额度计数,账号级。"
+    },
+    {
+      "path": "/api/hold-my-product/status",
+      "scope": "none",
+      "takes_workspace_id": false,
+      "discovery": false,
+      "note": "Hold My Product 的生成状态,按任务不按工作区。"
+    }
+  ]
+}
