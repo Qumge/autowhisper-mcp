@@ -33,6 +33,43 @@
       "canceled",
       "unknown"
     ],
+    "result_fields": {
+      "request": [
+        "request_id",
+        "request_state",
+        "task_id",
+        "operation_ids",
+        "quote",
+        "prepared",
+        "error",
+        "next_poll_after_ms",
+        "next_actions",
+        "task",
+        "billing"
+      ],
+      "task": [
+        "task_id",
+        "task_revision",
+        "task_state",
+        "items",
+        "delivery_complete",
+        "next_actions",
+        "billing"
+      ],
+      "billing": [
+        "unit",
+        "state",
+        "charged_credits",
+        "refunded_credits",
+        "net_credits",
+        "remaining_quote_credits",
+        "wallet_debited_credits",
+        "wallet_refunded_credits",
+        "entitlement_used_credits",
+        "entitlement_restored_credits",
+        "charge_count"
+      ]
+    },
     "error_codes": [
       "invalid_request",
       "workspace_not_found",
@@ -588,7 +625,7 @@
       },
       {
         "name": "autowhisper_task",
-        "description": "Read exactly one request_id or task_id in an explicit workspace. applied means command accepted, not delivered content. Check delivery_complete, previews and next_actions. No models, mutations or credits.",
+        "description": "Read exactly one request_id or task_id in an explicit workspace. applied means command accepted, not delivered content. Check delivery_complete, current artifacts, previews, next_actions and billing (actual credits/refunds, distinct from quotes). Partial cards do not mean the full set is complete; previous_previews are historical. No models, mutations or credits.",
         "method": "GET",
         "path": "/api/content/requests/:request_id|/api/content/tasks/:task_id",
         "inputSchema": {

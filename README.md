@@ -43,6 +43,11 @@ Get your token at **[autowhisper.xyz/skill](https://autowhisper.xyz/skill)** →
 - **`autowhisper_update_task`** — revise, resume or render explicit items using the current task/item revisions and server-returned preview approval.
 - **`autowhisper_task`** — read exactly one `request_id` or `task_id`. `applied` means the command reached the native task; only `delivery_complete=true` means the requested deliverable is ready.
 
+Task reads include actual native `billing` (charges, refunds, remaining quote,
+wallet versus included usage). Reused charge identities count once. Partial
+carousel artifacts contain the current delivered cards and a version-bound render
+action; `previous_previews` is historical content.
+
 These four tools require `workspace_id`. Discover workspace IDs with `autowhisper_status`, then read context before creating. Follow the returned `next_actions` for confirmation and review. Unknown submission? Query the original request ID before retrying; do not invent a new ID or fall back to a separately charged CMO turn. `requires_planning` means explain the unsupported requirement and offer CMO advice. Production availability depends on the backend rollout flag and user allowlist; this change is not yet published.
 
 - **`autowhisper_cmo`** — ask for marketing judgment or planning, such as *"Which creative should I run first?"*. Prefer the direct content tools when the requested product, content and changes are explicit.
