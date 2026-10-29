@@ -1,0 +1,3 @@
+# autowhisper-mcp
+
+@AGENTS.md
